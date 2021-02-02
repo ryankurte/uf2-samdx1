@@ -17,6 +17,7 @@
 #define BOOT_PIN_PULLUP 1
 #define BOOT_PIN_PULL 1
 
+
 #define BOOT_USART_MODULE                 SERCOM4
 #define BOOT_USART_MASK                   APBAMASK
 #define BOOT_USART_BUS_CLOCK_INDEX        MCLK_APBBMASK_SERCOM3

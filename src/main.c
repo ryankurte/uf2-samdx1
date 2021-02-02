@@ -131,6 +131,9 @@ static void check_start_application(void) {
     PORT->Group[(BOOT_PIN) / 32].OUT.reg |= (BOOT_PIN_PULL << (BOOT_PIN % 32));
 #endif
 
+    // Delay a moment for the buffer to come up
+    delay(1);
+
     // Read value
     bool val = (PORT->Group[(BOOT_PIN) / 32].IN.bit.IN & (1 << (BOOT_PIN % 32))) != 0;
 
