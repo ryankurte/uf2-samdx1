@@ -116,6 +116,38 @@ static void check_start_application(void) {
     }
 #endif
 
+#if USE_BOOT_GPIO
+    // Setup GPIO pin to input direction
+    PINOP(BOOT_PIN, DIRCLR);
+    
+    // Enable input buffer
+    PORT->Group[(BOOT_PIN) / 32].PINCFG[BOOT_PIN % 32].bit.INEN = 1;
+
+#ifdef BOOT_PIN_PULLUP 
+    // Enable pull-up
+    PORT->Group[(BOOT_PIN) / 32].PINCFG[BOOT_PIN % 32].bit.PULLEN = 1;
+
+    // Set pullup HIGH
+    PORT->Group[(BOOT_PIN) / 32].OUT.reg |= (BOOT_PIN_PULL << (BOOT_PIN % 32));
+#endif
+
+    // Read value
+    bool val = (PORT->Group[(BOOT_PIN) / 32].IN.bit.IN & (1 << (BOOT_PIN % 32))) != 0;
+
+#ifdef BOOT_PIN_PULLUP
+    // Disable pullup
+    PORT->Group[(BOOT_PIN) / 32].PINCFG[BOOT_PIN % 32].bit.PULLEN = 0;
+#endif
+
+    // Disable input buffer
+    PORT->Group[(BOOT_PIN) / 32].PINCFG[BOOT_PIN % 32].bit.INEN = 0;
+
+    // Check returned value
+    if (!val) {
+        return;
+    }
+#endif
+
     if (RESET_CONTROLLER->RCAUSE.bit.POR) {
         *DBL_TAP_PTR = 0;
     }
